@@ -1,65 +1,125 @@
-
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Body = Matter.Body;
+const constraint= Matter.Constraint;
 
+var c;
+var b;
+var s;
+var t;
+var ground,g;
+var back;
+var m,m2,m3,m4,m5,m6,m7,m8,m9;
 
+/*function preload()
+{
+	back=loadImage("village back.jpg");
+}*/
 
 function setup() {
-	createCanvas(1300, 700);
-
+	createCanvas(800, 600);
 
 	engine = Engine.create();
 	world = engine.world;
 
 	//Create the Bodies Here.
-roof = new Roof(650, 350, 400 , 30)
-bob1 = new Bob(340, 500 , 40)
-bob2 = new Bob(420, 500 , 40)
-bob3 = new Bob(500, 500 , 40)
-bob4 = new Bob(580, 500 , 40)
-bob5 = new Bob(660, 500 , 40)
-rope1 = new Rope(roof.body, bob1.body, -160, 0)
-rope2 = new Rope(roof.body, bob2.body, -80,0)
-rope3 = new Rope(roof.body, bob3.body,0,0)
-rope4 = new Rope(roof.body, bob4.body,80,0)
-rope5 = new Rope(roof.body, bob5.body,160,0)
+    b= new Boy(100,260,150,300);
+
+	ground = new Ground(175,600,1500,20);
+
+	t = new Tree(300,190,400,500);
+
+	s = new Stone(100,500,20);
+
+    m  = new Mango(275,110,40);
+	m2 = new Mango(250,160,40);
+	m3 = new Mango(300,150,40);
+	m4 = new Mango(350,150,40);
+	m5 = new Mango(325,100,40);
+	m6 = new Mango(300,125,40);
+	m7 = new Mango(380,170,40);
+	m8 = new Mango(275,170,40);
+	m9 = new Mango(350,120,40);
+	
+	c = new Chain(s.body,{x:150,y:450});
+
 	Engine.run(engine);
   
-
 }
 
 
 function draw() {
-background("lightpink");
   
+    background("255")
+	textSize(25);
+	fill("red")
+	text("HIT THE SPACE BAR TO GET NEXT CHANCE ",50 ,50);
 
- roof.display();
- bob1.display();
- bob2.display();
- bob3.display();
- bob4.display();
- bob5.display();
- rope1.display();
- rope2.display();
- rope3.display();
- rope4.display();
- rope5.display();
+	b.display();
+
+	s.display();
+	
+	ground.display();
+
+	t.display();
+
+	m.display();
+	m2.display();
+	m3.display();
+	m4.display();
+	m5.display();
+	m6.display();
+	m7.display();
+	m8.display();
+	m9.display();
+
+	c.display();
+
+	detectCollision(s,m);
+	detectCollision(s,m2);
+	detectCollision(s,m3);
+	detectCollision(s,m4);
+	detectCollision(s,m5);
+	detectCollision(s,m6);
+	detectCollision(s,m7);
+	detectCollision(s,m8);
+	detectCollision(s,m9); 
+
+	t.depth = s.depth;
+	s.depth = s.depth+1;
+
+  drawSprites();
 
 }
-function keyPressed (){
-if (keyCode===LEFT_ARROW){
-Body.applyForce(bob1.body,bob1.body.position, {x:-300 , y: -300} )
-
+function mouseDragged()
+{
+    Matter.Body.setPosition(s.body,{x:mouseX,y:mouseY});
 }
 
-
-if (keyCode ===RIGHT_ARROW){
-	Body.applyForce(bob5.body,bob5.body.position, {x:300 , y: -300} )
+function mouseReleased()
+{
+  c.released();
+ //Matter.Body.applyForce(s.body,s.body.position,{x:50,y:-200});
 }
+function keyPressed()
+{
+	if(keyCode == 32)
+	{
+			Matter.Body.setPosition(s.body,{x:100,y:400});
+			c.attach(s.body);
+	}
 }
 
+function detectCollision(lstone,lmango){
+	mangoBodyPosition=lmango.body.position
+	stoneBodyPosition=lstone.body.position
+	
+	var distance=dist(stoneBodyPosition.x,stoneBodyPosition.y,mangoBodyPosition.x,mangoBodyPosition.y)
+	  if(distance<=lmango.r+lstone.r){
+		  Matter.Body.setStatic(lmango.body,false);
+	  }
+   }
 
 
 
